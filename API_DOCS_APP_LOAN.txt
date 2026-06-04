@@ -1,0 +1,308 @@
+# Mobile App Loan API Documentation (V2 - Modular)
+
+**Base URL**: `https://vardhmanfinance.com/api/app_loan`
+
+This new API structure breaks down the loan application process into distinct endpoints. All endpoints support `POST` method and JSON bodies unless otherwise specified (e.g., Multipart).
+Error logging is enabled for all endpoints at `api/logs/app_loan_debug.log`.
+
+Common Response Structure:
+```json
+{
+    "success": true/false,
+    "message": "Description",
+    "data": { ... }
+}
+```
+
+## 1. Initiate Application (Step 1)
+Starts or resumes an application. Sends Email OTP.
+
+- **Endpoint**: `/initiate.php`
+- **Method**: `POST`
+- **Parameters**:
+    - `email` (string, required)
+    - `mobile` (string, required, 10 digits)
+    - `loan_type` (string, optional, default: 'instant loan')
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "OTP sent successfully to email@example.com"
+}
+```
+
+## 2. Verify Email OTP (Step 1 Verification)
+Verifies OTP and creates/retrieves loan record.
+
+- **Endpoint**: `/verify_email_otp.php`
+- **Method**: `POST`
+- **Parameters**:
+    - `email` (string, required)
+    - `mobile` (string, required)
+    - `otp` (string, required, 6 digits)
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Verification successful",
+    "data": {
+        "access_token": "UniqueToken123",
+        "step": 0,
+        "soft_approval_amount": 700000.00,
+        "status": "approved",
+        "applicant_name": "Name if exists"
+    }
+}
+```
+
+## 3. Initiate Aadhaar Verification (Step 2)
+Sends OTP to Aadhaar-linked mobile via Sandbox API.
+
+- **Endpoint**: `/initiate_aadhar.php`
+- **Method**: `POST`
+- **Parameters**:
+    - `access_token` (string, required)
+    - `aadhaar_number` (string, required, 12 digits)
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "OTP sent to Aadhaar linked mobile.",
+    "data": {
+        "ref_id": "ReferenceID123"
+    }
+}
+```
+
+## 4. Verify Aadhaar OTP (Step 2 Verification)
+Verifies Aadhaar OTP and fetches KYC data.
+
+- **Endpoint**: `/verify_aadhar_otp.php`
+- **Method**: `POST`
+- **Parameters**:
+    - `access_token` (string, required)
+    - `aadhaar_number` (string, required)
+    - `otp` (string, required, 6 digits)
+    - `ref_id` (string, required) - *Must be the same Reference ID received in `initiate_aadhar`.*
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Aadhaar verified successfully.",
+    "data": {
+        "step": 2,
+        "name": "John Doe",
+        "address": "...",
+        "photo_url": "..."
+    }
+}
+```
+
+## 4b. Verify Aadhaar KYC (OCR & Selfie Upload)
+Alternative to Step 2/3. Accepts OCR extracted data and images directly.
+
+- **Endpoint**: `/verify_aadhaar_kyc.php`
+- **Method**: `POST` (Multipart/Form-Data)
+- **Parameters**:
+    - `access_token` (string, required)
+    - `aadhaar_number` (string, required)
+    - `full_name` (string, required)
+    - `dob` (string, required, DD/MM/YYYY)
+    - `gender` (string, required)
+    - `address` (string, required)
+    - `pincode` (string, required)
+    - `image_front` (File, required)
+    - `image_back` (File, required)
+    - `image_selfie` (File, required)
+
+**Success Response:**
+```json
+{
+    "status": true,
+    "message": "Aadhaar KYC verified and saved successfully.",
+    "is_verified": false
+}
+```
+
+## 5. Verify PAN (Step 3) - BYPASSED LINK CHECK
+Uploads PAN and additional documents. Performs simple format validation on the PAN number. **Does NOT check PAN-Aadhaar linking status.**
+
+- **Endpoint**: `/verify_pan.php`
+- **Method**: `POST`
+- **Parameters**:
+    - `access_token` (string, required)
+    - `pan_number` (string, required)
+    - `pan_image` (string, optional, Base64)
+    - `additional_doc` (string, optional, Base64)
+    - `map` (string, optional, "lat,long")
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "PAN details verified and saved successfully.",
+    "data": {
+        "step": 3,
+        "personal_details": {
+            "name": "John Doe",
+            "gender": "Male",
+            "dob": "1990-01-01",
+            "father_name": "Father Name",
+            "address": "Full Address",
+            "photo_url": "https://.../aadhaar_photo.jpg"
+        }
+    }
+}
+```
+
+## 6. Save Personal Details & Face Match (Step 4)
+Saves personal info and uploads selfie/house photos for face match.
+
+- **Endpoint**: `/save_personal_details.php`
+- **Method**: `POST`
+- **Parameters**:
+    - `access_token` (string, required)
+    - `name` (string, required)
+    - `dob` (string, required, YYYY-MM-DD)
+    - `gender` (string, required, Male/Female)
+    - `father_name` (string, required)
+    - `address` (string, required)
+    - `paddress` (string, required)
+    - `pincode` (string, required)
+    - `city` (string, required)
+    - `district` (string, required)
+    - `selfie_image` (string, required, Base64)
+    - `house_image` (string, required, Base64)
+    - `latitude` (string, optional)
+    - `longitude` (string, optional)
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Personal details saved.",
+    "data": {
+        "step": 4
+    }
+}
+```
+
+## 7. Save Family Details (Step 5)
+Saves guarantor and family details.
+
+- **Endpoint**: `/save_family_details.php`
+- **Method**: `POST`
+- **Parameters**:
+    - `access_token` (string, required)
+    - `mother_name` (string, required)
+    - `guarantor1_name` (string, required)
+    - `guarantor1_mobile` (string, required)
+    - `guarantor2_name` (string, required)
+    - `guarantor2_mobile` (string, required)
+    - `marital_status` (string, optional)
+    - `spouse_name` (string, optional)
+    - `grelation1` (string, optional)
+    - `grelation2` (string, optional)
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Family details saved.",
+    "data": {
+        "step": 5
+    }
+}
+```
+
+## 8. Save Bank Details (Step 6)
+Saves bank info and uploads statement PDF.
+
+- **Endpoint**: `/save_bank_details.php`
+- **Method**: `POST`
+- **Parameters**:
+    - `access_token` (string, required)
+    - `loan_amount` (number, required)
+    - `account_holder_name` (string, required)
+    - `account_number` (string, required)
+    - `ifsc_code` (string, required)
+    - `bank_name` (string, required)
+    - `branch_name` (string, required)
+    - `alternate_mobile` (string, required)
+    - `bank_statement` (string, required, Base64 PDF)
+    - `statement_password` (string, optional)
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Bank details saved.",
+    "data": {
+        "step": 6
+    }
+}
+```
+
+## 9. Save Profession Details (Step 7 - Generate Offer)
+Saves profession info, docs, triggers approval logic, and returns the generated offer details (limits).
+
+- **Endpoint**: `/save_profession_details.php`
+- **Method**: `POST`
+- **Parameters**:
+    - `access_token` (string, required)
+    - `profession` (string, required, 'Self-Employed' or 'Salaried')
+    - *Plus profession-specific fields (company_name, etc.) and documents (electricity_bill, blank_cheque, etc.) as Base64.*
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Application submitted successfully. Offer generated.",
+    "data": {
+        "status": "approved",
+        "offer": {
+            "approved_amount": 1200000,
+            "roi": 12.5,
+            "tenure_months": 60,
+            "min_loan_amount": 500000,
+            "max_loan_amount": 1200000,
+            "loan_step": 5000,
+            "min_tenure": 12,
+            "max_tenure": 120,
+            "tenure_step": 3
+        }
+    }
+}
+```
+*Note: Use the fields in the `offer` object to render a slider/input for the user to select their desired loan amount and tenure.*
+
+## 10. Accept Offer (Step 8 - Final)
+Submits the user's selected loan amount and tenure, finalizing the application.
+**Important:** This step rotates the `access_token`. You must update the stored token in the app with `new_access_token`.
+
+- **Endpoint**: `/accept_offer.php`
+- **Method**: `POST`
+- **Parameters**:
+    - `access_token` (string, required)
+    - `loan_amount` (number, required)
+    - `tenure` (number, required, in months)
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Offer accepted successfully.",
+    "data": {
+        "step": 7,
+        "status": "finalized",
+        "new_access_token": "NewUniqueTokenABC",
+        "accepted_amount": 1000000,
+        "tenure": 48,
+        "emi": 26500.50
+    }
+}
+```

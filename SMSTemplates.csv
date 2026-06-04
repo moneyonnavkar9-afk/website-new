@@ -1,0 +1,80 @@
+﻿TEMPLATE ID,TELEMARKETER,TEMPLATE NAME,TYPE,HEADER,CATEGORY,REGISTERED DLT,REQUESTED ON,STATUS DATE,CREATED BY,BLACKLISTED BY,APPROVAL STATUS,STATUS,TEMPLATE MESSAGE,SAMPLE MESSAGE,CONSENT TYPE,REASON
+'1107176979945317459',--,congrats_approval,Service-Implicit,iVRDMN,Other,Vodafone Idea,31-Jan-2026 00:27:33,31-Jan-2026 10:37:43,Arihant Bafna,--,Approved,Active,"Dear {#alphanumeric#}, congratulations on your loan approval! Your receipt is generated. Loan ID: {#alphanumeric#},  Amount: Rs. {#numeric#}/-,  Account No: {#alphanumeric#}. Credit will be completed within 2  3 working days. -Vardhman Finance","Dear Arihant, congratulations on your loan approval! Your receipt is generated. Loan ID: VAL-DL/121334,  Amount: Rs. 32000000/-,  Account No: XXXXXXXXXX5434. Credit will be completed within 2  3 working days.",Implicit,Template Approved
+'1107176979915199682',--,warning_policy_premium,Service-Implicit,iVRDMN,Other,Vodafone Idea,31-Jan-2026 00:22:32,31-Jan-2026 10:37:42,Arihant Bafna,--,Approved,Active,"Dear {#alphanumeric#}, 
+reminder: insurance premium not received yet. File No: {#alphanumeric#}, Loan Amount: Rs. {#numeric#}/-. Kindly complete payment within 24 hours to avoid rejection of your insurance application. -Vardhman Finance","Dear Arihant, 
+reminder: insurance premium not received yet. File No: DL-VA/12132, Loan Amount: Rs. 23333000/-. Kindly complete payment within 24 hours to avoid rejection of your insurance application.",Implicit,Template Approved
+'1107176979903685978',--,service_charge_warning,Service-Implicit,iVRDMN,Other,Vodafone Idea,31-Jan-2026 00:20:37,31-Jan-2026 00:20:53,Arihant Bafna,--,Approved,Active,"Dear {#alphanumeric#}, service charges for your loan file (File No: {#alphanumeric#}) have not been received. If payment is not deposited within 24 hours, your loan application will be rejected. -Vardhman Finance","Dear Arihant, service charges for your loan file (File No: DL-Val/12133) have not been received. If payment is not deposited within 24 hours, your loan application will be rejected.",Implicit,Approved Template
+'1107176979893960532',--,service_charges,Service-Implicit,iVRDMN,Other,Vodafone Idea,31-Jan-2026 00:19:00,31-Jan-2026 10:37:42,Arihant Bafna,--,Approved,Active,"Congratulations {#alphanumeric#}! Your loan file (File No: {#alphanumeric#}) for Rs.{#numeric#} has been successfully approved. To proceed with Loan, please submit the service charges of Rs.{#numeric#}/-. Once the service charges are received, your loan amount will be disbursed at the earliest. -Vardhman Finance","Congratulations Arihant! Your loan file (File No: DL-VAL/12333) for Rs.3200000 has been successfully approved. To proceed with Loan, please submit the service charges of Rs.2300/-. Once the service charges are received, your loan amount will be disbursed at the earliest.",Implicit,Template Approved
+'1107176976879577243',--,paymentfailed,Service-Implicit,iVRDMN,Other,Vodafone Idea,30-Jan-2026 15:56:36,30-Jan-2026 18:04:31,Arihant Bafna,--,Approved,Active,"Dear {#alphanumeric#},
+
+This is to inform you that Vardhman Finance attempted multiple times to deposit an amount of Rs. {#numeric#}/- to your Bank account no {#alphanumeric#} under File No. {#alphanumeric#} however, the transaction could not be completed due to an issue with your bank account.
+
+We request you to kindly contact our Customer Care team to proceed with an alternative payment mode.
+Thank you for your cooperation.
+Regards -Vardhman Finance","Dear Arihant,
+
+This is to inform you that Vardhman Finance attempted multiple times to deposit an amount of Rs. 320000/- to your Bank account no XXXXXXXXXX534 under File No. VAL-gds/1234 however, the transaction could not be completed due to an issue with your bank account.
+
+We request you to kindly contact our Customer Care team to proceed with an alternative payment mode.
+Thank you for your cooperation.
+Regards",Implicit,Approved template
+'1107176976847465105',--,imps,Service-Implicit,iVRDMN,Other,Vodafone Idea,30-Jan-2026 15:51:15,30-Jan-2026 18:04:31,Arihant Bafna,--,Approved,Active,"Dear {#alphanumeric#},
+
+We acknowledge receipt of your IMPS transfer bearing Transaction Reference No.: {#alphanumeric#}, received towards your loan application (Application ID: {#alphanumeric#}) for a loan amount of INR {#numeric#}/-. The amount has been successfully credited to our account.
+
+Our team will review the same and proceed further as per the applicable process. You will be updated accordingly.
+
+Regards, -Vardhman Finance","Dear Arihant,
+
+We acknowledge receipt of your IMPS transfer bearing Transaction Reference No.: REF6253642, received towards your loan application (Application ID: VAl-uw/1233) for a loan amount of INR 320000/-. The amount has been successfully credited to our account.
+
+Our team will review the same and proceed further as per the applicable process. You will be updated accordingly.
+
+Regards,",Implicit,Approved template
+'1107176970823857327',--,neftrecept,Service-Implicit,iVRDMN,Other,Vodafone Idea,29-Jan-2026 23:07:19,29-Jan-2026 23:07:34,Arihant Bafna,--,Approved,Active,"Dear {#alphanumeric#},
+
+We acknowledge receipt of your NEFT transfer in connection with your loan application (Application ID: {#alphanumeric#}) for a loan amount of INR {#numeric#}/-. The amount has been successfully credited to your account.
+
+Our team will review the same and proceed with the next steps as per the process. You will be updated accordingly.
+
+Regards, -Vardhman Finance","Dear Arihant,
+
+We acknowledge receipt of your NEFT transfer in connection with your loan application (Application ID: DL-val/54556) for a loan amount of INR 320000/-. The amount has been successfully credited to your account.
+
+Our team will review the same and proceed with the next steps as per the process. You will be updated accordingly.
+
+Regards,",Implicit,Approved Template
+'1107176970795089239',--,rtgstransfer,Service-Implicit,iVRDMN,Other,Vodafone Idea,29-Jan-2026 23:02:31,29-Jan-2026 23:02:46,Arihant Bafna,--,Approved,Active,"Dear {#alphanumeric#},
+We confirm receipt of your RTGS transfer towards your loan application (Application ID: {#alphanumeric#}) for a loan amount of INR {#numeric#}/-. The amount has been successfully credited. Our team will process the next steps and update you shortly. -Vardhman Finance","Dear Arihant,
+We confirm receipt of your RTGS transfer towards your loan application (Application ID: DL-VALE/23633) for a loan amount of INR 438389/-. The amount has been successfully credited. Our team will process the next steps and update you shortly.",Implicit,Approved Template
+'1107176946200557580',--,premium_pay,Service-Implicit,iVRDMN,Other,Vodafone Idea,27-Jan-2026 02:43:26,28-Jan-2026 10:29:46,Arihant Bafna,--,Approved,Active,"Dear {#alphanumeric#},
+This is to inform you that the {#alphanumeric#} premium amount of INR {#numeric#}/- for your loan application (Application ID: {#alphanumeric#}) at Vardhman Finance with a loan amount of INR {#alphanumeric#}/- is pending. Kindly pay the {#alphanumeric#} premium at the earliest. Upon successful payment, your loan amount will be disbursed within 24 hours.
+For any assistance, please contact our Customer Care.","Dear Arihant,
+This is to inform you that the Service premium amount of INR 3200/- for your loan application (Application ID: VAL-DL/1232324) at Vardhman Finance with a loan amount of INR 32000000/- is pending. Kindly pay the Service premium at the earliest. Upon successful payment, your loan amount will be disbursed within 24 hours.
+For any assistance, please contact our Customer Care.",Implicit,Approved template
+'1107176946180186429',--,pending_vardhman_low,Service-Implicit,iVRDMN,Other,Vodafone Idea,27-Jan-2026 02:40:02,27-Jan-2026 12:24:56,Arihant Bafna,--,Approved,Active,"Dear {#alphanumeric#},
+We wish to inform you that your loan application (Application ID: {#alphanumeric#}) for a loan amount of INR {#numeric#}/- is under review due to a low average balance reflected in the submitted bank statement. Please contact our Customer Care team for further guidance or required documentation.","Dear Arihant,
+We wish to inform you that your loan application (Application ID: DL-VAL/109376) for a loan amount of INR 32000000/- is under review due to a low average balance reflected in the submitted bank statement. Please contact our Customer Care team for further guidance or required documentation.",Implicit,Approved Template
+'1107176946163586957',--,field_verification_under,Service-Implicit,iVRDMN,Other,Vodafone Idea,27-Jan-2026 02:37:16,27-Jan-2026 12:28:02,Arihant Bafna,--,Approved,Active,"Dear {#alphanumeric#},
+This is to inform you that your loan application (Application ID: {#alphanumeric#}) for an amount of INR {#numeric#}/- is currently under Field Verification. Our team will be conducting a verification survey shortly and will update you at the earliest.
+For any queries, please feel free to contact our Customer Care team.
+Regards,","Dear Arihant,
+This is to inform you that your loan application (Application ID: DL-VAL/12333444) for an amount of INR 32000000/- is currently under Field Verification. Our team will be conducting a verification survey shortly and will update you at the earliest.
+For any queries, please feel free to contact our Customer Care team.
+Regards,",Implicit,Approved Template
+'1107176946149663170',--,field_failed,Service-Implicit,iVRDMN,Other,Vodafone Idea,27-Jan-2026 02:34:57,27-Jan-2026 12:29:08,Arihant Bafna,--,Approved,Active,"Dear {#alphanumeric#},
+We regret to inform you that your loan application (Application ID: {#alphanumeric#}) for an amount of INR {#numeric#}/- has been declined due to Field Verification, as neighbor acknowledgment could not be obtained.
+For further details or assistance, please contact our Customer Care team.
+Regards,","Dear Arihant,
+We regret to inform you that your loan application (Application ID: DL-val/1213133) for an amount of INR 32000000/- has been declined due to Field Verification, as neighbor acknowledgment could not be obtained.
+For further details or assistance, please contact our Customer Care team.
+Regards,",Implicit,Approved Template
+'1107176862994698298',--,vardhman_gurantor_verification,Service-Implicit,iVRDMN,Other,Vodafone Idea,17-Jan-2026 11:35:47,17-Jan-2026 14:14:46,Arihant Bafna,--,Approved,Active,Guarantor verification pending for file {#var#}. Verify here: {#var#}{#var#}. Do not share this link. -Vardhman Finance,,Implicit,Approved template
+'1107176862964781401',--,vardhman_auth_code,Transactional,iVRDMN,Other,Vodafone Idea,17-Jan-2026 11:30:48,17-Jan-2026 11:30:59,Arihant Bafna,--,Approved,Active,"Dear {#var#}, your 4-digit verification code to initiate payment for private funding is {#var#}. Please complete the payment within 24 hours of code generation. If not completed, your file will be rejected and you may reapply after 89 days. Do not share this code. -Vardhman Finance",,--,Approved Template
+'1107176862954645854',--,vardhman_amount_credit_to_customer,Transactional,iVRDMN,Other,Vodafone Idea,17-Jan-2026 11:29:06,17-Jan-2026 14:14:46,Arihant Bafna,--,Approved,Active,"Dear {#var#}, INR {#var#} credited to {#var#} A/c ****{#var#} on {#var#} via {#var#}. Ref: {#var#}. For info, call Toll-Free 1800-202-8381. -Vardhman Finance",,--,Approved template
+'1107176862941149652',--,vardhman_payout,Transactional,iVRDMN,Other,Vodafone Idea,17-Jan-2026 11:26:52,17-Jan-2026 14:14:47,Arihant Bafna,--,Approved,Active,"Dear {#var#}, Rs {#var#} has been sent to A/c {#var#} via {#var#}. Ref: {#var#}. Bank: {#var#}. Date: {#var#}. -Vardhman Finance",,--,Approved template
+'1107176862926821706',--,vardhman_neft_rtgs_msz,Transactional,iVRDMN,Other,Vodafone Idea,17-Jan-2026 11:24:28,17-Jan-2026 14:14:46,Arihant Bafna,--,Approved,Active,"Dear {#var#}, your account {#var#} has been credited with Rs {#var#} via {#var#}. UTR/Ref: {#var#}. Bank: {#var#}. Date: {#var#}. -Vardhman Finance",,--,Approved template
+'1107176833195610988',--,v_status_update,Service-Implicit,iVRDMN,Other,Vodafone Idea,14-Jan-2026 00:49:16,14-Jan-2026 11:54:58,Arihant Bafna,--,Approved,Active,"Dear {#var#}, we are {#var#} {#var#} to inform you that your Application ID {#var#} has been {#var#} {#var#}. You will receive further notifications via email and SMS. In the meantime, you can track your application on our mobile app or contact us at {#var#}. -Vardhman Finance",,Implicit,Approved template
+'1107176399019144183',--,votpfinal,Transactional,"nfVDMN,iVRDMN",Other,Vodafone Idea,24-Nov-2025 18:46:31,25-Nov-2025 21:34:08,Arihant Bafna,--,Approved,Active,"Dear Customer, your OTP is {#var#}. 
+This OTP is valid for {#var#} minutes. 
+Do not share this code with anyone. -Vardhman Finance",,--,Approved Template

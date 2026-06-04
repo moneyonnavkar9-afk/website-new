@@ -1,0 +1,693 @@
+# Mobile App API Documentation
+
+**Base URL**: `https://vardhmanfinance.com/api`
+
+## 1. Check App Status
+Checks maintenance mode, force update status, and latest version. This should be called **before login** when the app launches.
+
+- **Endpoint**: `/check_app_status.php`
+- **Method**: `GET`
+- **Content-Type**: `application/json`
+
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "maintenance_mode": false,
+    "force_update": true,
+    "latest_version_code": "1.0.2",
+    "app_url": "https://vardhmanfinance.com/vardhman.apk",
+    "maintenance_message": "System is under maintenance. Please try again later."
+  }
+}
+```
+
+**Fields Explained:**
+- `maintenance_mode` (bool): If `true`, the app should block all user interaction and show the `maintenance_message`.
+- `force_update` (bool): If `true`, the app should check if its local version < `latest_version_code`. If so, block usage and prompt user to download from `app_url`.
+- `latest_version_code` (string): The latest available version code (e.g., "12" or "1.0.2").
+- `app_url` (string): Direct download link for the APK.
+- `maintenance_message` (string): Text to display when `maintenance_mode` is `true`.
+
+---
+
+## 2. Request OTP
+Sends a 4-digit OTP to the provided mobile number.
+
+- **Endpoint**: `/request_otp.php`
+- **Method**: `POST`
+- **Content-Type**: `application/json`
+
+**Request Body:**
+```json
+{
+  "mobile": "9999999999"
+}
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "OTP sent successfully",
+  "data": []
+}
+```
+
+**Blocked User Response (403):**
+```json
+{
+  "success": false,
+  "message": "Your account is blocked. Please contact support.",
+  "data": []
+}
+```
+
+---
+
+## 3. Verify OTP & Login
+Verifies the OTP. If correct:
+- Logs the user in.
+- Creates a new user account if one doesn't exist.
+- Returns an authentication token.
+
+- **Endpoint**: `/verify_otp.php`
+- **Method**: `POST`
+- **Content-Type**: `application/json`
+
+**Request Body:**
+```json
+{
+  "mobile": "9999999999",
+  "otp": "1234"
+}
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "token": "a1b2c3d4...",
+    "user_id": 15,
+    "mobile": "9999999999"
+  }
+}
+```
+*Note: The `token` should be stored securely on the device and sent in headers for future authenticated requests.*
+
+**Error Response (400/403):**
+```json
+{
+  "success": false,
+  "message": "Invalid OTP or OTP expired",
+  "data": []
+}
+```
+
+---
+
+## 4. Home Screen Data
+Fetches the user's profile completion percentage and any pending loan application.
+
+- **Endpoint**: `/get_home_data.php`
+- **Method**: `GET`
+- **Headers**:
+  - `Authorization`: `Bearer <token>`
+
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Home screen data fetched",
+  "data": {
+    "profile_progress": 66,
+    "pending_loan_application": {
+      "file_id": "12345",
+      "access_token": "UniqueToken123",
+      "current_step": 4,
+      "amount": "500000.00",
+      "started_at": "2023-10-27 10:00:00",
+      "message": "Complete your application to get approved faster!"
+    },
+    "all_pending_loans": [
+      {
+        "file_id": "12345",
+        "access_token": "UniqueToken123",
+        "file_type": "instant loan",
+        "current_step": 4,
+        "amount": "500000.00",
+        "started_at": "2023-10-27 10:00:00"
+      },
+      {
+        "file_id": "67890",
+        "access_token": "UniqueToken456",
+        "file_type": "personal loan",
+        "current_step": 2,
+        "amount": "100000.00",
+        "started_at": "2023-11-15 14:30:00"
+      }
+    ]
+  }
+}
+```
+*Note: `pending_loan_application` will be `null` if no incomplete loans are found. `all_pending_loans` returns an array of all incomplete applications.*
+
+**Blocked User Response (403):**
+```json
+{
+  "success": false,
+  "message": "Your account is blocked.",
+  "data": {
+    "is_blocked": true
+  }
+}
+```
+
+---
+
+## 5. Get User Profile
+Fetches all stored profile information including personal details, address, bank account, and transaction history.
+
+- **Endpoint**: `/get_profile.php`
+- **Method**: `GET`
+- **Headers**:
+  - `Authorization`: `Bearer <token>`
+
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Profile data fetched",
+  "data": {
+    "personal": {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "mobile": "9999999999",
+      "dob": "1990-01-01"
+    },
+    "address": {
+      "address_line": "123 Main St",
+      "city": "New Delhi",
+      "pincode": "110001"
+    },
+    "bank_account": {
+      "bank_name": "HDFC Bank",
+      "account_number": "501000...",
+      "ifsc_code": "HDFC0001234"
+    },
+    "transaction_history": [
+      {
+        "amount": "5000.00",
+        "type": "debit",
+        "description": "EMI Payment",
+        "transaction_date": "2023-10-01 10:00:00"
+      }
+    ],
+    "completeness_score": 67
+  }
+}
+```
+
+---
+
+## 6. Update Profile
+Updates personal details, address, or bank account information. You can send partial updates (e.g., just address).
+
+- **Endpoint**: `/update_profile.php`
+- **Method**: `POST`
+- **Content-Type**: `application/json`
+- **Headers**:
+  - `Authorization`: `Bearer <token>`
+
+**Request Body (All fields are optional, send only what you want to update):**
+```json
+{
+  "name": "John Doe",
+  "email": "john@newmail.com",
+  "dob": "1990-01-01",
+  "address": {
+    "address_line": "456 New Road",
+    "city": "Mumbai",
+    "pincode": "400001"
+  },
+  "bank_account": {
+    "bank_name": "SBI",
+    "account_number": "30001234567",
+    "ifsc_code": "SBIN0001234"
+  }
+}
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Profile updated successfully",
+  "data": {
+    "new_completeness_score": 100
+  }
+}
+```
+
+---
+
+## 7. Sync Contacts
+Syncs the user's mobile contacts with the server. This endpoint works in "replace" mode: it deletes all previously stored contacts for the user and inserts the new list provided in the request body.
+
+- **Endpoint**: `/save_contacts.php`
+- **Method**: `POST`
+- **Headers**:
+  - `Content-Type`: `application/json`
+  - `Authorization`: `Bearer <token>`
+
+**Request Body:**
+```json
+{
+    "contacts": [
+        {
+            "name": "Alice Smith",
+            "mobile": "9876543210"
+        },
+        {
+            "name": "Bob Jones",
+            "mobile": "+919988776655"
+        }
+    ]
+}
+```
+
+**Success Response (200 OK):**
+```json
+{
+    "success": true,
+    "message": "Contacts synced successfully",
+    "data": {
+        "count": 2
+    }
+}
+```
+
+**Error Response (401 Unauthorized):**
+```json
+{
+    "success": false,
+    "message": "Unauthorized",
+    "data": []
+}
+```
+
+---
+
+## 8. Get My Loans (Updated)
+Fetches ALL loans linked to the user's mobile number, including active, completed, and incomplete/pending applications.
+
+- **Endpoint**: `/get_my_loans.php`
+- **Method**: `GET`
+- **Headers**:
+  - `Authorization`: `Bearer <token>`
+
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Loans fetched successfully",
+  "data": [
+    {
+      "id": 123,
+      "file_id": "VRDMN12345",
+      "file_type": "instant loan",
+      "status": "approved",
+      "display_status": "approved",
+      "step": 7,
+      "access_token": "UniqueTokenXYZ",
+      "soft_approval_amount": "500000.00",
+      "approved_loan_amount": "450000.00",
+      "created_at": "2023-10-27 10:00:00"
+    },
+    {
+      "id": 124,
+      "file_id": "VRDMN67890",
+      "file_type": "personal loan",
+      "status": "pending",
+      "display_status": "incomplete",
+      "step": 3,
+      "access_token": "UniqueTokenABC",
+      "soft_approval_amount": "0.00",
+      "created_at": "2023-11-01 12:00:00"
+    }
+  ]
+}
+```
+
+**Resume Application Logic:**
+To resume an incomplete application:
+1. Iterate through the `data` array.
+2. Identify items where `step < 7` or `display_status` is "incomplete".
+3. Use the `access_token` from that item.
+4. Call `api/apply_loan.php` with the appropriate `action` (e.g., `save_personal_details`) and the `access_token` to complete the next step.
+
+---
+
+## 9. Apply Loan (Unified Flow)
+This API handles the complete loan application process for Instant Loans and other types.
+
+**Base URL**: `/api/apply_loan.php`
+
+Common Response Structure:
+```json
+{
+    "success": true/false,
+    "message": "Description",
+    "data": { ... }
+}
+```
+
+### 9.1 Initiate Application (Step 1)
+Starts or resumes an application. Sends Email OTP.
+
+**Action**: `initiate`
+**Parameters**:
+- `email` (string, required)
+- `mobile` (string, required, 10 digits)
+- `loan_type` (string, optional, default: 'instant loan')
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "OTP sent successfully to email@example.com"
+}
+```
+
+### 9.2 Verify Email OTP (Step 1 Verification)
+Verifies OTP and creates/retrieves loan record.
+
+**Action**: `verify_email_otp`
+**Parameters**:
+- `email` (string, required)
+- `mobile` (string, required)
+- `otp` (string, required, 6 digits)
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Verification successful",
+    "data": {
+        "access_token": "UniqueToken123",
+        "step": 0,
+        "soft_approval_amount": 700000.00,
+        "status": "approved",
+        "applicant_name": "Name if exists"
+    }
+}
+```
+*Note: Store `access_token` for subsequent requests.*
+
+### 9.3 Initiate Aadhaar Verification (Step 2)
+Sends OTP to Aadhaar-linked mobile via Sandbox API.
+
+**Action**: `initiate_aadhar`
+**Parameters**:
+- `access_token` (string, required)
+- `aadhaar_number` (string, required, 12 digits)
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "OTP sent to Aadhaar linked mobile.",
+    "data": {
+        "ref_id": "ReferenceID123"
+    }
+}
+```
+*Important: You must capture and store the `ref_id` returned here. It is required for the next step.*
+
+**Error Responses:**
+1. **Invalid Aadhaar**:
+    ```json
+    {
+        "success": false,
+        "message": "Invalid Aadhaar number format",
+        "data": []
+    }
+    ```
+2. **Missing Reference ID (Upstream Failure)**:
+    ```json
+    {
+        "success": false,
+        "message": "Upstream Error: Missing Reference ID. Please retry.",
+        "data": []
+    }
+    ```
+   *If you receive this error, it means the backend successfully communicated with the upstream provider but failed to retrieve a session Reference ID. Do not proceed to the OTP screen.*
+
+### 9.4 Verify Aadhaar OTP (Step 2 Verification)
+Verifies Aadhaar OTP and fetches KYC data.
+
+**Action**: `verify_aadhar_otp`
+**Parameters**:
+- `access_token` (string, required)
+- `aadhaar_number` (string, required)
+- `otp` (string, required, 6 digits)
+- `ref_id` (string, required) - *Must be the same Reference ID received in `initiate_aadhar`.*
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Aadhaar verified successfully.",
+    "data": {
+        "step": 2
+    }
+}
+```
+*Note: If you receive a "Session expired" or "Invalid Reference ID" error, it means the `ref_id` is invalid or the time window (approx 10 mins) has passed. You must call `initiate_aadhar` again to get a new `ref_id`.*
+
+### 9.5 Verify PAN & Address Proof (Step 3)
+Uploads PAN and additional documents. Performs format validation on the PAN number.
+
+**Action**: `verify_pan`
+**Parameters**:
+- `access_token` (string, required)
+- `pan_number` (string, required)
+- `pan_image` (string, optional, Base64)
+- `additional_doc` (string, optional, Base64)
+- `map` (string, optional, "lat,long")
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "PAN details verified and saved successfully.",
+    "data": {
+        "step": 3,
+        "personal_details": {
+            "name": "John Doe",
+            "gender": "Male",
+            "dob": "1990-01-01",
+            "father_name": "Father Name",
+            "address": "Full Address",
+            "photo_url": "https://.../aadhaar_photo.jpg"
+        }
+    }
+}
+```
+
+**Error Responses:**
+1. **PAN Link Failure**:
+    ```json
+    {
+        "success": false,
+        "message": "PAN Verification Failed: PAN not linked with Aadhaar.",
+        "data": []
+    }
+    ```
+
+### 9.7 Save Personal Details & Face Match (Step 4)
+Saves personal info and uploads selfie/house photos for face match.
+
+**Action**: `save_personal_details`
+**Parameters**:
+- `access_token` (string, required)
+- `name` (string, required)
+- `dob` (string, required, YYYY-MM-DD)
+- `gender` (string, required, Male/Female)
+- `father_name` (string, required)
+- `address` (string, required)
+- `paddress` (string, required)
+- `pincode` (string, required)
+- `city` (string, required)
+- `district` (string, required)
+- `selfie_image` (string, required, Base64)
+- `house_image` (string, required, Base64)
+- `latitude` (string, optional)
+- `longitude` (string, optional)
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Personal details saved.",
+    "data": {
+        "step": 4
+    }
+}
+```
+
+### 9.8 Save Family Details (Step 5)
+Saves guarantor and family details.
+
+**Action**: `save_family_details`
+**Parameters**:
+- `access_token` (string, required)
+- `mother_name` (string, required)
+- `guarantor1_name` (string, required)
+- `guarantor1_mobile` (string, required)
+- `guarantor2_name` (string, required)
+- `guarantor2_mobile` (string, required)
+- `marital_status` (string, optional)
+- `spouse_name` (string, optional)
+- `grelation1` (string, optional)
+- `grelation2` (string, optional)
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Family details saved.",
+    "data": {
+        "step": 5
+    }
+}
+```
+
+### 9.9 Save Bank Details (Step 6)
+Saves bank info and uploads statement PDF.
+
+**Action**: `save_bank_details`
+**Parameters**:
+- `access_token` (string, required)
+- `loan_amount` (number, required)
+- `account_holder_name` (string, required)
+- `account_number` (string, required)
+- `ifsc_code` (string, required)
+- `bank_name` (string, required)
+- `branch_name` (string, required)
+- `alternate_mobile` (string, required)
+- `bank_statement` (string, required, Base64 PDF)
+- `statement_password` (string, optional)
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Bank details saved.",
+    "data": {
+        "step": 6
+    }
+}
+```
+
+### 9.10 Save Profession Details (Step 7 - Final)
+Saves profession info, docs, and triggers final approval.
+
+**Action**: `save_profession_details`
+**Parameters**:
+- `access_token` (string, required)
+- `profession` (string, required, 'Self-Employed' or 'Salaried')
+- *Plus profession-specific fields (company_name, etc.) and documents (electricity_bill, blank_cheque, etc.) as Base64.*
+
+**Success Response:**
+```json
+{
+    "success": true,
+    "message": "Application submitted successfully.",
+    "data": {
+        "status": "approved",
+        "approved_amount": 1200000,
+        "roi": 12.5,
+        "tenure_months": 60
+    }
+}
+```
+
+---
+
+## 10. Service Usage (Aadhar No Detect)
+Checks or deducts balance for paid services like "Aadhar No Detect".
+
+- **Endpoint**: `/service_usage.php`
+- **Method**: `POST`
+- **Content-Type**: `application/json`
+
+### 10.1 Check Balance
+Checks if sufficient balance is available for the service.
+
+**Request Body:**
+```json
+{
+    "action": "check",
+    "service_key": "aadhar_no_detect"
+}
+```
+*Note: `service_key` is optional and defaults to `aadhar_no_detect`.*
+
+**Success Response (200 OK):**
+```json
+{
+    "success": true,
+    "message": "Service status retrieved",
+    "data": {
+        "service_key": "aadhar_no_detect",
+        "display_name": "Aadhar No Detect",
+        "balance": 50.00,
+        "rate": 1.00,
+        "sufficient_balance": true
+    }
+}
+```
+
+### 10.2 Deduct Balance
+Deducts the service rate from the balance.
+
+**Request Body:**
+```json
+{
+    "action": "deduct",
+    "service_key": "aadhar_no_detect",
+    "user_id": "123",  // Optional, for logging
+    "description": "User requested detection" // Optional
+}
+```
+
+**Success Response (200 OK):**
+```json
+{
+    "success": true,
+    "message": "Balance deducted successfully",
+    "data": {
+        "previous_balance": 50.00,
+        "new_balance": 49.00,
+        "deducted_amount": 1.00,
+        "transaction_id": 105
+    }
+}
+```
+
+**Error Response (402 Payment Required):**
+```json
+{
+    "success": false,
+    "message": "Insufficient balance",
+    "data": {
+        "balance": 0.00,
+        "rate": 1.00,
+        "required": 1.00
+    }
+}
+```
